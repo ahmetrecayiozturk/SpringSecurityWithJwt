@@ -19,6 +19,28 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.swing.*;
 
+/**
+ * Spring Security configuration class for JWT-based authentication.
+ * This configuration class sets up the security framework for the application,
+ * defining authentication mechanisms, authorization rules, and JWT-specific filters.
+ * 
+ * <p>The configuration implements a stateless security model using JWT tokens,
+ * eliminating the need for server-side sessions. It configures:</p>
+ * <ul>
+ *   <li>HTTP security with CSRF protection disabled for stateless operation</li>
+ *   <li>Public endpoints for user registration and login</li>
+ *   <li>JWT filter for token validation on protected endpoints</li>
+ *   <li>BCrypt password encoding for secure password storage</li>
+ *   <li>Custom user details service for user authentication</li>
+ * </ul>
+ * 
+ * <p>This configuration ensures that all API endpoints except login and registration
+ * require valid JWT tokens for access, providing a secure authentication mechanism
+ * for the application.</p>
+ * 
+ * @author Spring Security with JWT Application
+ * @since 1.0
+ */
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
@@ -29,6 +51,24 @@ public class SecurityConfig {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    /**
+     * Configures the security filter chain for HTTP requests.
+     * This method sets up the main security configuration including URL authorization,
+     * session management, and filter chain setup for JWT authentication.
+     * 
+     * <p>The configuration:</p>
+     * <ul>
+     *   <li>Disables CSRF protection as it's not needed for stateless APIs</li>
+     *   <li>Permits all access to login and registration endpoints</li>
+     *   <li>Requires authentication for all other endpoints</li>
+     *   <li>Configures stateless session management</li>
+     *   <li>Adds the JWT filter before username/password authentication</li>
+     * </ul>
+     * 
+     * @param http the HttpSecurity object to configure security settings
+     * @return a configured SecurityFilterChain for the application
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // CSRF'yi devre dışı bırakmak için 'csrf().disable()' yerine 'csrf().disable().and()' ekliyoruz.
@@ -49,6 +89,21 @@ public class SecurityConfig {
                 .build();
     }
 
+    /**
+     * Creates and configures the authentication manager bean.
+     * This manager is responsible for processing authentication requests and
+     * integrating with the custom user details service and password encoder.
+     * 
+     * <p>The authentication manager is configured with:</p>
+     * <ul>
+     *   <li>Custom user details service for loading user information</li>
+     *   <li>BCrypt password encoder for password verification</li>
+     * </ul>
+     * 
+     * @param http the HttpSecurity object used to obtain the authentication manager builder
+     * @return a configured AuthenticationManager for the application
+     * @throws Exception if an error occurs during authentication manager creation
+     */
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         //önce AuthBuilder'i oluşturuyoruz
@@ -60,7 +115,18 @@ public class SecurityConfig {
                 .passwordEncoder(passwordEncoder());
         return authBuilder.build();
     }
-    //passwordEncoder beani tanımlıyoruz,bu beani kullanarak şifreleri bCrypt ile şifreleyeceğiz
+    
+    /**
+     * Creates a BCrypt password encoder bean for secure password hashing.
+     * This encoder is used throughout the application for encoding passwords
+     * during user registration and verifying passwords during authentication.
+     * 
+     * <p>BCrypt is a strong, adaptive hashing function designed specifically
+     * for password hashing. It automatically handles salt generation and
+     * provides resistance against rainbow table and brute force attacks.</p>
+     * 
+     * @return a BCryptPasswordEncoder instance for password operations
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

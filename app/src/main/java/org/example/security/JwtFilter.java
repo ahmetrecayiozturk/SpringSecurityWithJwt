@@ -17,6 +17,26 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * JWT authentication filter that processes incoming HTTP requests to validate JWT tokens.
+ * This filter extends OncePerRequestFilter to ensure it runs exactly once per request
+ * and handles JWT token extraction, validation, and security context setup.
+ * 
+ * <p>The filter operates by:</p>
+ * <ul>
+ *   <li>Extracting JWT tokens from the Authorization header</li>
+ *   <li>Validating tokens using the JwtUtil service</li>
+ *   <li>Setting up the Spring Security context for authenticated users</li>
+ *   <li>Bypassing authentication for login and register endpoints</li>
+ * </ul>
+ * 
+ * <p>This filter is essential for stateless JWT-based authentication, ensuring that
+ * each request carries sufficient authentication information without relying on
+ * server-side sessions.</p>
+ * 
+ * @author Spring Security with JWT Application
+ * @since 1.0
+ */
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
@@ -26,6 +46,22 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
+    /**
+     * Processes each HTTP request to extract and validate JWT tokens.
+     * This method implements the core JWT authentication logic, including token
+     * extraction from headers, validation, and security context setup.
+     * 
+     * <p>The filter bypasses authentication for login and register endpoints,
+     * allowing users to authenticate and create accounts without existing tokens.
+     * For all other endpoints, it validates the JWT token and establishes the
+     * security context if the token is valid.</p>
+     * 
+     * @param request the HTTP request containing potential JWT token in Authorization header
+     * @param response the HTTP response object
+     * @param filterChain the filter chain to continue request processing
+     * @throws ServletException if servlet-related errors occur during processing
+     * @throws IOException if I/O errors occur during request/response handling
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
