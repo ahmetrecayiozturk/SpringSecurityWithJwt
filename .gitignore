@@ -3,3 +3,30 @@
 
 # Ignore Gradle build output directory
 build
+
+# IDE specific files
+.idea/
+*.iml
+*.iws
+.vscode/
+.project
+.classpath
+.settings/
+
+# Environment variables
+.env
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.swp
+*.bak

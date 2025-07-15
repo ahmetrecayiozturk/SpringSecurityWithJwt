@@ -1,0 +1,15 @@
+# Simple Dockerfile that uses pre-built JAR
+# Build the project first: ./gradlew clean build -x test
+FROM eclipse-temurin:21-jre-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the jar file (make sure it exists after gradle build)
+COPY app/build/libs/*.jar /app/app.jar
+
+# Expose the port your application will run on
+EXPOSE 8080
+
+# Run the Java application
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

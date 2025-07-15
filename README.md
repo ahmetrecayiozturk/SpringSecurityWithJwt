@@ -26,6 +26,7 @@ A robust and secure Spring Boot application implementing JWT (JSON Web Token) au
     - [Accessing Protected Endpoints](#accessing-protected-endpoints)
   - [🛠️ Configuration](#️-configuration)
   - [🧪 Testing](#-testing)
+  - [🚨 Troubleshooting](#-troubleshooting)
   - [🤝 Contributing](#-contributing)
   - [📄 License](#-license)
   - [👤 Author](#-author)
@@ -137,6 +138,8 @@ docker-compose down
 ```
 
 #### Manual Docker Build
+
+**Option 1: Multi-stage build (builds inside Docker)**
 ```bash
 # Build the Docker image
 docker build -t spring-security-jwt .
@@ -147,6 +150,22 @@ docker run -p 8080:8080 \
   -e SPRING_DATASOURCE_USERNAME=your-username \
   -e SPRING_DATASOURCE_PASSWORD=your-password \
   spring-security-jwt
+```
+
+**Option 2: Simple build (build locally first)**
+```bash
+# Build the project locally first
+./gradlew clean build -x test
+
+# Build simple Docker image
+docker build -f Dockerfile.simple -t spring-security-jwt-simple .
+
+# Run the container
+docker run -p 8080:8080 \
+  -e SPRING_DATASOURCE_URL=jdbc:postgresql://your-db-host:5432/your-db \
+  -e SPRING_DATASOURCE_USERNAME=your-username \
+  -e SPRING_DATASOURCE_PASSWORD=your-password \
+  spring-security-jwt-simple
 ```
 
 ## 📡 API Endpoints
@@ -285,6 +304,36 @@ Run specific test classes:
 
 ```bash
 ./gradlew test --tests "*AuthControllerTest"
+```
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+**Database Connection Issues**
+```bash
+# Check if PostgreSQL is running
+docker ps | grep postgres
+
+# View application logs
+docker-compose logs app
+
+# Reset database
+docker-compose down -v && docker-compose up -d
+```
+
+**JWT Token Issues**
+- Ensure the `Authorization` header includes `Bearer ` prefix
+- Check token expiration (default: 1 hour)
+- Verify the JWT secret is properly configured
+
+**Build Issues**
+```bash
+# Clean and rebuild
+./gradlew clean build
+
+# Check Java version
+java -version  # Should be Java 21+
 ```
 
 ## 🤝 Contributing
