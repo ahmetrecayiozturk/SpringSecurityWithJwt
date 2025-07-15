@@ -42,17 +42,19 @@ app/
 │       │       └── CustomUserDetailsService.java # User details for authentication
 ├── build.gradle
 ├── Dockerfile
-└── settings.gradle
+├── settings.gradle
+└── .gitignore
 ```
-## Project Schema 
 
-User → [POST /auth/login] → AuthController
-AuthController → AuthenticationManager + UserDetailsService → Authentication
-AuthController → JwtUtil → Generate JWT Token
+## Project Schema
+
+User → [POST /auth/login] → AuthController  
+AuthController → AuthenticationManager + UserDetailsService → Authentication  
+AuthController → JwtUtil → Generate JWT Token  
 → Token is returned to the user
 
-User → [Every request with Authorization: Bearer <token>] → JwtFilter
-JwtFilter → JwtUtil + UserDetailsService → Token validation
+User → [Every request with Authorization: Bearer <token>] → JwtFilter  
+JwtFilter → JwtUtil + UserDetailsService → Token validation  
 JwtFilter → SecurityContextHolder → Authenticate the user
 
 (If the token is valid, the user can access the endpoint; if not, an error is returned!)
@@ -68,10 +70,15 @@ JwtFilter → SecurityContextHolder → Authenticate the user
 ### Running Locally
 
 ```bash
+# Clone the repository
+git clone https://github.com/ahmetrecayiozturk/spring-security-jwt.git
+cd spring-security-jwt/app
+
 # Build and run with Gradle
-cd app
 ./gradlew bootRun
 ```
+
+Application will start at [http://localhost:8080](http://localhost:8080)
 
 ### Using Docker
 
@@ -115,7 +122,14 @@ Authorization: Bearer <JWT Token>
 ## Extending
 
 - Add more user roles/privileges by extending the `User` entity and security config.
-- Integrate with databases by configuring your preferred datasource.
+- Integrate with databases by configuring your preferred datasource in `src/main/resources/application.properties`.
+
+## Notes
+
+- **Configuration:**  
+  All application configuration (database, port, etc.) should be managed in `src/main/resources/application.properties`.  
+  **Warning:** The `application.properties` file is ignored by git for security reasons.  
+  If you need to share configuration, create an `application-example.properties` file with placeholder values.
 
 ## License
 
@@ -123,4 +137,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-> **Author:** [ahmetrecayiozturk](https://github.com/ahmetrecayiozturk)  
+> **Author:** [ahmetrecayiozturk](https://github.com/ahmetrecayiozturk)
