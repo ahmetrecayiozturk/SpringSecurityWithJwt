@@ -44,6 +44,18 @@ app/
 ├── Dockerfile
 └── settings.gradle
 ```
+## Project Schema 
+
+User → [POST /auth/login] → AuthController
+AuthController → AuthenticationManager + UserDetailsService → Authentication
+AuthController → JwtUtil → Generate JWT Token
+→ Token is returned to the user
+
+User → [Every request with Authorization: Bearer <token>] → JwtFilter
+JwtFilter → JwtUtil + UserDetailsService → Token validation
+JwtFilter → SecurityContextHolder → Authenticate the user
+
+(If the token is valid, the user can access the endpoint; if not, an error is returned!)
 
 ## Quick Start
 
