@@ -3,3 +3,23 @@
 
 # Ignore Gradle build output directory
 build
+
+# Ignore IDE directories
+.idea/
+*.iml
+
+# Ignore Maven target directory (if used for migration)
+target/
+
+# Ignore logs
+*.log
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore environment files
+.env
+
+# Ignore application properties for security
+src/main/resources/application.properties
